@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "955926255412",
+    "firebase_url": "https://group-chat-89290.firebaseio.com",
+    "project_id": "group-chat-89290",
+    "storage_bucket": "group-chat-89290.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:955926255412:android:7fa244a90b6460dd",
+        "android_client_info": {
+          "package_name": "com.acadview.groupchat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "955926255412-03kj7p5eitndvmd8p4bupq5bcgj8s4pg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCx_tCeVLTsLAod2IZXeq5PDlIBEkSQfqE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "955926255412-03kj7p5eitndvmd8p4bupq5bcgj8s4pg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
