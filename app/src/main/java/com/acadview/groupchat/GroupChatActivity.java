@@ -1,13 +1,15 @@
 package com.acadview.groupchat;
 
-import android.os.Message;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 
 import com.acadview.groupchat.Adapters.MessageAdapter;
 import com.acadview.groupchat.Models.AllMethods;
+import com.acadview.groupchat.Models.Message;
 import com.acadview.groupchat.Models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,6 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class GroupChatActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -48,6 +52,7 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.activity_group_chat);
 
         init();
+
     }
 
     private void init() {
@@ -55,9 +60,10 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
         auth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         u = new User();
-        rvMessage = findViewById(R.id.rvMessage);
-        etMessage = findViewById(R.id.et_message);
-        imgButton = findViewById(R.id.sendBtn);
+
+        rvMessage = (RecyclerView) findViewById(R.id.rvMessage);
+        etMessage = (EditText) findViewById(R.id.etMessage);
+        imgButton = (ImageButton) findViewById(R.id.sendBtn);
         imgButton.setOnClickListener(this);
         messages = new ArrayList<>();
     }
@@ -66,7 +72,7 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View v) {
 
         if(!TextUtils.isEmpty(etMessage.getText().toString())){
-            Message message = new Message(etMessage.getText().toString(),u.getName());
+          Message message = new Message(etMessage.getText().toString(),u.getName());
             etMessage.setText("");
             messagedb.push().setValue(message);
         }else{
@@ -74,6 +80,26 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
         }
 
     }
+
+
+    /*for menu */
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()== R.id.menulogout){
+            auth.signOut();
+            finish();
+            startActivity(new Intent(GroupChatActivity.this,MainActivity.class));
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
 
     @Override
@@ -107,7 +133,6 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-
                 Message message = dataSnapshot.getValue(Message.class);
                 message.setKey(dataSnapshot.getKey());
                 messages.add(message);
@@ -126,12 +151,12 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
                 for(Message m: messages){
                     if(m.getKey().equals(message.getKey())){
                         newMessages.add(message);
-                    }else
-                    {
+                    }else{
                         newMessages.add(m);
                     }
+
                 }
-                messages= newMessages;
+                messages = newMessages;
                 displayMessages(messages);
             }
 
@@ -139,15 +164,17 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
                 Message message = dataSnapshot.getValue(Message.class);
-                message.setkey(dataSnapshot.getKey());
+                message.setKey(dataSnapshot.getKey());
 
-                List<com.acadview.groupchat.Models.Message> newMessages = new ArrayList<>();
+                List<Message> newMessages = new ArrayList<>();
 
                 for(Message m:messages){
                     if(!m.getKey().equals(message.getKey())){
-                        displayMessages(messages);
+                        newMessages.add(m);
                     }
                 }
+                messages = newMessages;
+                displayMessages(messages);
 
             }
 
@@ -165,12 +192,12 @@ public class GroupChatActivity extends AppCompatActivity implements View.OnClick
 
 
     }
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        messages = new ArrayList<>();
-    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        messages= new ArrayList<>();
+    }
 
     private void displayMessages(List<Message> messages) {
 

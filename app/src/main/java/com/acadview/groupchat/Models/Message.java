@@ -14,7 +14,6 @@ public class Message {
         this.key = key;
     }
 
-
     public String getMessage() {
         return message;
     }
@@ -38,7 +37,6 @@ public class Message {
     public void setKey(String key) {
         this.key = key;
     }
-
 
     @Override
     public String toString() {
